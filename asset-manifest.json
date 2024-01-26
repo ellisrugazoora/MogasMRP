@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/MogasMRP/static/css/main.b28d57d2.css",
+    "main.js": "/MogasMRP/static/js/main.27c1a50d.js",
+    "static/js/787.52f951ae.chunk.js": "/MogasMRP/static/js/787.52f951ae.chunk.js",
+    "static/media/logo.svg": "/MogasMRP/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "index.html": "/MogasMRP/index.html",
+    "main.b28d57d2.css.map": "/MogasMRP/static/css/main.b28d57d2.css.map",
+    "main.27c1a50d.js.map": "/MogasMRP/static/js/main.27c1a50d.js.map",
+    "787.52f951ae.chunk.js.map": "/MogasMRP/static/js/787.52f951ae.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b28d57d2.css",
+    "static/js/main.27c1a50d.js"
+  ]
+}
