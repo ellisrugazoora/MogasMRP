@@ -11,7 +11,7 @@ function App() {
   var display = {a: <StockApp />, b: <Tanga />, c: <Music />}
   return (
     <ChakraProvider>
-      
+      {/* <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> */}
       <Box className="App" width={"100%"}>
         {display.b}
       </Box>

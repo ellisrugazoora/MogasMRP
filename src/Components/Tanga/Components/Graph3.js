@@ -5,7 +5,7 @@ import DataFunction from '../Data/DataFunction';
 import { Button } from '@chakra-ui/button';
 import NumberInp from './NumberInp';
 import TaBle from './TaBle';
-import { Input } from '@chakra-ui/react';
+import { Input, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper } from '@chakra-ui/react';
 
 
 function Graph3(props){
@@ -57,7 +57,7 @@ function Graph3(props){
         text: `Mogas LOBP Production projection ${props.title}`,
     },
     subtitle: {
-        text: "In thousands of Litres",
+        text: "In tons",
       },
     data: [ //each object is a group (stacked or not)
         data(args).bo1, data(args).bo2, data(args).bo3, data(args).bo4,data(args).bo5, data(args).ad1,data(args).ad2,data(args).ad3, 
@@ -99,17 +99,10 @@ function Graph3(props){
         }
         return result
     }
-    function tick(number, id){
-        let new_val = parseInt(number, 10);
-        console.log(new_val, id);
-        
-        SetArgs((current) => {
-            return {...current, [id]: new_val}
-        });
-        
-    }
     function prodtable(number,id){
-        let new_val = parseInt(number, 10);
+        //let new_val = parseInt(number, 10);
+        //let new_val = parseFloat(number);
+        let new_val = number;
         SetArgs((current) => {
             return {...current, [id]: new_val}
         });
@@ -128,8 +121,9 @@ function Graph3(props){
         }
     }
     function inv_table(number, id){
-        let new_val = parseInt(number, 10);
-        
+        //let new_val = parseFloat(number);
+        //let new_val = parseInt(number, 10);
+        let new_val = number;
         SetArgs((current) => {
             return {...current, [id]: new_val}
         });
@@ -137,11 +131,11 @@ function Graph3(props){
     }
     function product_total(args){
         let productlist = ["_2T", "_4T", "atfIII", "DuramaxHD", "FrontiaX", "Geo80W90", "Geo85W140", "Hydrax32","HydraxZ46","HydraxZ68","PowerTransSP150","PowerTransSP220","PowerTransSP320","Sb22D210","SentryHDSae40","TurbofleetSae15W"]
-        let sum = 0;
+        var sum = 0;
         for (const product of productlist) {
-            sum = sum + args[product];
+            sum = sum + parseFloat(args[product]);
         }
-        return sum;
+        return (sum);
     }
     
     var orderdate = (obj) => {
@@ -159,54 +153,51 @@ function Graph3(props){
         let result = (obj.inv / obj.consrate).toFixed(1);
         return result;
     }
+    var buttonsize = "md";
     var initdate = new Date();
-    var prod_table_columns = ["Products", "Quantity", "Maximize"]
+    var prod_table_columns = ["Products", "Quantity (Tons)", "Maximize"]
     var prod_table_data = {
-        prod1: {col1: "2T", col2: <NumberInp value={args._2T} prod="_2T" onChange={tick} init={args._2T} />, col4: <Button id='max' name='_2T' onClick={tablebutton}>Set Max</Button>},
-        prod2: {col1: "4T", col2: <NumberInp value={args._4T} prod="_4T" onChange={tick} init={args._4T} />, col4: <Button id='max' name='_4T' onClick={tablebutton}>Set Max</Button>},
-        prod3: {col1: "ATF III", col2: <NumberInp value={args.atfIII} prod="atfIII" onChange={prodtable} init={args.atfIII} />, col4: <Button id='max' name='atfIII' onClick={tablebutton}>Set Max</Button>},
-        prod4: {col1: "Duramax HD", col2: <NumberInp value={args.DuramaxHD} prod="DuramaxHD" onChange={prodtable} init={args.DuramaxHD} />, col4: <Button id='max' name='DuramaxHD' onClick={tablebutton}>Set Max</Button>},
-        prod5: {col1: "Frontia X", col2: <NumberInp value={args.FrontiaX} prod="FrontiaX" onChange={prodtable} init={args.FrontiaX} />, col4: <Button id='max' name='FrontiaX' onClick={tablebutton}>Set Max</Button>},
-        prod6: {col1: "GEO 80W90", col2: <NumberInp value={args.Geo80W90} prod="Geo80W90" onChange={prodtable} init={args.Geo80W90} />, col4: <Button id='max' name='Geo80W90' onClick={tablebutton}>Set Max</Button>},
-        prod7: {col1: "GEO 85W140", col2: <NumberInp value={args.Geo85W140} prod="Geo85W140" onChange={prodtable} init={args.Geo85W140} />, col4: <Button id='max' name='Geo85W140' onClick={tablebutton}>Set Max</Button>},
-        prod8: {col1: "Hydrax 32", col2: <NumberInp value={args.Hydrax32} prod="Hydrax32" onChange={prodtable} init={args.Hydrax32} />, col4: <Button id='max' name='Hydrax32' onClick={tablebutton}>Set Max</Button>},
-        prod9: {col1: "Hydrax Z 46", col2: <NumberInp value={args.HydraxZ46} prod="HydraxZ46" onChange={prodtable} init={args.HydraxZ46} />, col4: <Button id='max' name='HydraxZ46' onClick={tablebutton}>Set Max</Button>},
-        prod10: {col1: "Hydrax Z 68", col2: <NumberInp value={args.HydraxZ68} prod="HydraxZ68" onChange={prodtable} init={args.HydraxZ68} />, col4: <Button id='max' name='HydraxZ68' onClick={tablebutton}>Set Max</Button>},
-        prod11: {col1: "Power Trans SP 150", col2: <NumberInp value={args.PowerTransSP150} prod="PowerTransSP150" onChange={prodtable} init={args.PowerTransSP150} />, col4: <Button id='max' name='PowerTransSP150' onClick={tablebutton}>Set Max</Button>},
-        prod12: {col1: "Power Trans SP 220", col2: <NumberInp value={args.PowerTransSP220} prod="PowerTransSP220" onChange={prodtable} init={args.PowerTransSP220} />, col4: <Button id='max' name='PowerTransSP220' onClick={tablebutton}>Set Max</Button>},
-        prod13: {col1: "Power Trans SP 320", col2: <NumberInp value={args.PowerTransSP320} prod="PowerTransSP320" onChange={prodtable} init={args.PowerTransSP320} />, col4: <Button id='max' name='PowerTransSP320' onClick={tablebutton}>Set Max</Button>},
-        prod14: {col1: "SB 22 D210", col2: <NumberInp value={args.Sb22D210} prod="Sb22D210" onChange={prodtable} init={args.Sb22D210} />, col4: <Button id='max' name='Sb22D210' onClick={tablebutton}>Set Max</Button>},
-        prod15: {col1: "Sentry HD Sae 40", col2: <NumberInp value={args.SentryHDSae40} prod="SentryHDSae40" onChange={prodtable} init={args.SentryHDSae40} />, col4: <Button id='max' name='SentryHDSae40' onClick={tablebutton}>Set Max</Button>},
-        prod16: {col1: "Turbofleet Sae 15W", col2: <NumberInp value={args.TurbofleetSae15W} prod="TurbofleetSae15W" onChange={prodtable} init={args.TurbofleetSae15W} />, col4: <Button id='max' name='TurbofleetSae15W' onClick={tablebutton}>Set Max</Button>},
-        total: {col1: "Total", col2: product_total(args), col3: <Button isDisabled>Empty</Button> }
+        prod1: {col1: "2T", col2: <NumberInp value={args._2T} prod="_2T" onChange={prodtable} init={args._2T} />, col4: <Button size={buttonsize} id='max' name='_2T' onClick={tablebutton}>Set Max</Button>},
+        prod2: {col1: "4T", col2: <NumberInp value={args._4T} prod="_4T" onChange={prodtable} init={args._4T} />, col4: <Button size={buttonsize} id='max' name='_4T' onClick={tablebutton}>Set Max</Button>},
+        prod3: {col1: "ATF III", col2: <NumberInp value={args.atfIII} prod="atfIII" onChange={prodtable} init={args.atfIII} />, col4: <Button size={buttonsize} id='max' name='atfIII' onClick={tablebutton}>Set Max</Button>},
+        prod4: {col1: "Duramax HD", col2: <NumberInp value={args.DuramaxHD} prod="DuramaxHD" onChange={prodtable} init={args.DuramaxHD} />, col4: <Button size={buttonsize} id='max' name='DuramaxHD' onClick={tablebutton}>Set Max</Button>},
+        prod5: {col1: "Frontia X", col2: <NumberInp value={args.FrontiaX} prod="FrontiaX" onChange={prodtable} init={args.FrontiaX} />, col4: <Button size={buttonsize} id='max' name='FrontiaX' onClick={tablebutton}>Set Max</Button>},
+        prod6: {col1: "GEO 80W90", col2: <NumberInp value={args.Geo80W90} prod="Geo80W90" onChange={prodtable} init={args.Geo80W90} />, col4: <Button size={buttonsize} id='max' name='Geo80W90' onClick={tablebutton}>Set Max</Button>},
+        prod7: {col1: "GEO 85W140", col2: <NumberInp value={args.Geo85W140} prod="Geo85W140" onChange={prodtable} init={args.Geo85W140} />, col4: <Button size={buttonsize} id='max' name='Geo85W140' onClick={tablebutton}>Set Max</Button>},
+        prod8: {col1: "Hydrax 32", col2: <NumberInp value={args.Hydrax32} prod="Hydrax32" onChange={prodtable} init={args.Hydrax32} />, col4: <Button size={buttonsize} id='max' name='Hydrax32' onClick={tablebutton}>Set Max</Button>},
+        prod9: {col1: "Hydrax Z 46", col2: <NumberInp value={args.HydraxZ46} prod="HydraxZ46" onChange={prodtable} init={args.HydraxZ46} />, col4: <Button size={buttonsize} id='max' name='HydraxZ46' onClick={tablebutton}>Set Max</Button>},
+        prod10: {col1: "Hydrax Z 68", col2: <NumberInp value={args.HydraxZ68} prod="HydraxZ68" onChange={prodtable} init={args.HydraxZ68} />, col4: <Button size={buttonsize} id='max' name='HydraxZ68' onClick={tablebutton}>Set Max</Button>},
+        prod11: {col1: "Power Trans SP 150", col2: <NumberInp value={args.PowerTransSP150} prod="PowerTransSP150" onChange={prodtable} init={args.PowerTransSP150} />, col4: <Button size={buttonsize} id='max' name='PowerTransSP150' onClick={tablebutton}>Set Max</Button>},
+        prod12: {col1: "Power Trans SP 220", col2: <NumberInp value={args.PowerTransSP220} prod="PowerTransSP220" onChange={prodtable} init={args.PowerTransSP220} />, col4: <Button size={buttonsize} id='max' name='PowerTransSP220' onClick={tablebutton}>Set Max</Button>},
+        prod13: {col1: "Power Trans SP 320", col2: <NumberInp value={args.PowerTransSP320} prod="PowerTransSP320" onChange={prodtable} init={args.PowerTransSP320} />, col4: <Button size={buttonsize} id='max' name='PowerTransSP320' onClick={tablebutton}>Set Max</Button>},
+        prod14: {col1: "SB 22 D210", col2: <NumberInp value={args.Sb22D210} prod="Sb22D210" onChange={prodtable} init={args.Sb22D210} />, col4: <Button size={buttonsize} id='max' name='Sb22D210' onClick={tablebutton}>Set Max</Button>},
+        prod15: {col1: "Sentry HD Sae 40", col2: <NumberInp value={args.SentryHDSae40} prod="SentryHDSae40" onChange={prodtable} init={args.SentryHDSae40} />, col4: <Button size={buttonsize} id='max' name='SentryHDSae40' onClick={tablebutton}>Set Max</Button>},
+        prod16: {col1: "Turbofleet Sae 15W", col2: <NumberInp value={args.TurbofleetSae15W} prod="TurbofleetSae15W" onChange={prodtable} init={args.TurbofleetSae15W} />, col4: <Button size={buttonsize} id='max' name='TurbofleetSae15W' onClick={tablebutton}>Set Max</Button>},
+        total: {col1: "Total", col2: product_total(args), col3: <Button size={'md'} isDisabled>Empty</Button> }
     }
-    var inv_table_columns = ["Inventory", "Required", "In stock", "Consumption rate","Stock holding period","Lead time (days)",  "Order date", "Deficit/excess"];
+    var inv_table_columns = ["Inventory", "Required", "In stock (Tons)", "Avg. daily consumption rate (Tons)","Stock holding period","Lead time (days)", "Order date", "Deficit/excess"];
     var inv_table_data = {
-        inv1: {col1: "500SN/600N", col2: data(args).bo1.sum.toFixed(2), col3: <NumberInp prod="bo1" init={args.bo1} onChange={inv_table} value={args.bo1} />, consrate:<NumberInp prod="crbo1" init={5} onChange={inv_table} value={args.crbo1}/>, hs: shp({inv:args.bo1,consrate:args.crbo1}), col4: 60, order: orderdate({ mhs:5,hs: shp({inv:args.bo1,consrate:args.crbo1}), lt:2}), col5: (args.bo1 - data(args).bo1.sum).toFixed(2)},
-        inv2: {col1: "150SN", col2: data(args).bo2.sum.toFixed(2), col3: <NumberInp prod="bo2" init={args.bo2} onChange={inv_table} value={args.bo2} />, consrate:<NumberInp prod="crbo2" init={2} onChange={inv_table} value={args.crbo2}/>,hs: shp({inv:args.bo2,consrate:args.crbo2}),col4: 60,order: orderdate({hs: shp({inv:args.bo2,consrate:args.crbo2}), mhs:5, lt:2}),col5: (args.bo2 - data(args).bo2.sum).toFixed(2)},
-        inv3: {col1: "BS150", col2: data(args).bo3.sum.toFixed(2), col3: <NumberInp prod="bo3" init={args.bo3} onChange={inv_table} value={args.bo3} />, consrate:<NumberInp prod="crbo3" init={1} onChange={inv_table} value={args.crbo3}/>,hs: shp({inv:args.bo3,consrate:args.crbo3}),col4: 60,order: orderdate({hs: shp({inv:args.bo3,consrate:args.crbo3}), mhs:5, lt:2}),col5: (args.bo3 - data(args).bo3.sum).toFixed(2)},
-        inv4: {col1: "SN80/SN100", col2: data(args).bo4.sum.toFixed(2), col3: <NumberInp prod="bo4" init={args.bo4} onChange={inv_table} value={args.bo4} />, consrate:<NumberInp prod="crbo4" init={1} onChange={inv_table} value={args.crbo4}/>,hs: shp({inv:args.bo4,consrate:args.crbo4}),col4: 60,order: orderdate({hs: shp({inv:args.bo4,consrate:args.crbo4}), mhs:5, lt:2}),col5: (args.bo4 - data(args).bo4.sum).toFixed(2)},
-        inv5: {col1: "DPK", col2: data(args).bo5.sum.toFixed(2), col3: <NumberInp prod="bo5" init={args.bo5} onChange={inv_table} value={args.bo5} />, consrate:<NumberInp prod="crbo5" init={1} onChange={inv_table} value={args.crbo5}/>,hs: shp({inv:args.bo5,consrate:args.crbo5}),col4: 60,order: orderdate({hs: shp({inv:args.bo5,consrate:args.crbo5}), mhs:5, lt:2}),col5: (args.bo5 - data(args).bo5.sum).toFixed(2)},
+        inv1: {col1: "500SN/600N", col2: data(args).bo1.sum.toFixed(2), col3: <NumberInp prod="bo1" init={args.bo1} onChange={inv_table} value={args.bo1} />, consrate:<NumberInp prod="crbo1" init={args.crbo1} onChange={inv_table} value={args.crbo1}/>, hs: shp({inv:args.bo1,consrate:args.crbo1}), col4: 60, order: orderdate({ hs: shp({inv:args.bo1,consrate:args.crbo1}),mhs:60, lt:60}), col5: (args.bo1 - data(args).bo1.sum).toFixed(2)},
+        inv2: {col1: "150SN", col2: data(args).bo2.sum.toFixed(2), col3: <NumberInp prod="bo2" init={args.bo2} onChange={inv_table} value={args.bo2} />, consrate:<NumberInp prod="crbo2" init={args.crbo2} onChange={inv_table} value={args.crbo2}/>, hs: shp({inv:args.bo2,consrate:args.crbo2}),col4: 60,order: orderdate({hs: shp({inv:args.bo2,consrate:args.crbo2}), mhs:60, lt:60}),col5: (args.bo2 - data(args).bo2.sum).toFixed(2)},
+        inv3: {col1: "BS150", col2: data(args).bo3.sum.toFixed(2), col3: <NumberInp prod="bo3" init={args.bo3} onChange={inv_table} value={args.bo3} />, consrate:<NumberInp prod="crbo3" init={args.crbo3} onChange={inv_table} value={args.crbo3}/>,hs: shp({inv:args.bo3,consrate:args.crbo3}),col4: 60,order: orderdate({hs: shp({inv:args.bo3,consrate:args.crbo3}), mhs:60, lt:60}),col5: (args.bo3 - data(args).bo3.sum).toFixed(2)},
+        inv4: {col1: "SN80/SN100", col2: data(args).bo4.sum.toFixed(2), col3: <NumberInp prod="bo4" init={args.bo4} onChange={inv_table} value={args.bo4} />, consrate:<NumberInp prod="crbo4" init={1} onChange={inv_table} value={args.crbo4}/>, hs: shp({inv:args.bo4,consrate:args.crbo4}),col4: 60,order: orderdate({hs: shp({inv:args.bo4,consrate:args.crbo4}), mhs:60, lt:60}),col5: (args.bo4 - data(args).bo4.sum).toFixed(2)},
+        inv5: {col1: "DPK", col2: data(args).bo5.sum.toFixed(2), col3: <NumberInp prod="bo5" init={args.bo5} onChange={inv_table} value={args.bo5} />, consrate:<NumberInp prod="crbo5" init={args.crbo5} onChange={inv_table} value={args.crbo5}/>, hs: shp({inv:args.bo5,consrate:args.crbo5}),col4: 60,order: orderdate({hs: shp({inv:args.bo5,consrate:args.crbo5}), mhs:60, lt:60}),col5: (args.bo5 - data(args).bo5.sum).toFixed(2)},
 
-        inv6: {col1: "TBN+", col2: data(args).ad1.sum.toFixed(2), col3: <NumberInp prod="ad1" init={args.ad1} onChange={inv_table} value={args.ad1} />, consrate:<NumberInp prod="crad1" init={args.crad1} onChange={inv_table} value={args.crad1}/>,hs: shp({inv:args.ad1,consrate:args.crad1}),col4: 40,order: orderdate({hs: shp({inv:args.ad1,consrate:args.crad1}), mhs:5, lt:2}),col5: (args.ad1 - data(args).ad1.sum).toFixed(2)},
-        inv7: {col1: "PPD", col2: data(args).ad2.sum.toFixed(2), col3: <NumberInp prod="ad2" init={args.ad2} onChange={inv_table} value={args.ad2} />, consrate:<NumberInp prod="crad2" init={args.crad2} onChange={inv_table} value={args.crad2}/>,hs: shp({inv:args.ad2,consrate:args.crad2}),col4: 40,order: orderdate({hs: shp({inv:args.ad2,consrate:args.crad2}), mhs:5, lt:2}),col5: (args.ad2 - data(args).ad2.sum).toFixed(2)},
-        inv8: {col1: "CI-4", col2: data(args).ad3.sum.toFixed(2), col3: <NumberInp prod="ad3" init={args.ad3} onChange={inv_table} value={args.ad3} />, consrate:<NumberInp prod="crad3" init={args.crad3} onChange={inv_table} value={args.crad3}/>,hs: shp({inv:args.ad3,consrate:args.crad3}),col4: 40, order: orderdate({hs: shp({inv:args.ad3,consrate:args.crad3}), mhs:5, lt:2}),col5: (args.ad3 - data(args).ad3.sum).toFixed(2)},
-        inv9: {col1: "BS200", col2: data(args).ad4.sum.toFixed(2), col3: <NumberInp prod="ad4" init={args.ad4} onChange={inv_table} value={args.ad4} />, consrate:<NumberInp prod="crad4" init={args.crad4} onChange={inv_table} value={args.crad4}/>,hs: shp({inv:args.ad4,consrate:args.crad4}),col4: 40,order: orderdate({hs: shp({inv:args.ad4,consrate:args.crad4}), mhs:5, lt:2}),col5: (args.ad4 - data(args).ad4.sum).toFixed(2)},
-        inv10: {col1: "VII", col2: data(args).ad5.sum.toFixed(2), col3: <NumberInp prod="ad5" init={args.ad5} onChange={inv_table} value={args.ad5} />, consrate:<NumberInp prod="crad5" init={args.crad5} onChange={inv_table} value={args.crad5}/>,hs: shp({inv:args.ad5,consrate:args.crad5}),col4: 40,order: orderdate({hs: shp({inv:args.ad5,consrate:args.crad5}), mhs:5, lt:2}),col5: (args.ad5 - data(args).ad5.sum).toFixed(2)},
-        inv11: {col1: "MONO PA EO", col2: data(args).ad6.sum.toFixed(2), col3: <NumberInp prod="ad6" init={args.ad6} onChange={inv_table} value={args.ad6} />, consrate:<NumberInp prod="crad6" init={args.crad6} onChange={inv_table} value={args.crad6}/>,hs: shp({inv:args.ad6,consrate:args.crad6}),col4: 40,order: orderdate({hs: shp({inv:args.ad6,consrate:args.crad6}), mhs:5, lt:2}),col5: (args.ad6 - data(args).ad6.sum).toFixed(2)},
-        inv12: {col1: "4T PA PEO", col2: data(args).ad7.sum.toFixed(2), col3: <NumberInp prod="ad7" init={args.ad7} onChange={inv_table} value={args.ad7} />, consrate:<NumberInp prod="crad7" init={args.crad7} onChange={inv_table} value={args.crad7}/>,hs: shp({inv:args.ad7,consrate:args.crad7}),col4: 40,order: orderdate({hs: shp({inv:args.ad7,consrate:args.crad7}), mhs:5, lt:2}),col5: (args.ad7 - data(args).ad7.sum).toFixed(2)},
-        inv13:{col1: "ATF PA", col2: data(args).ad8.sum.toFixed(2), col3: <NumberInp prod="ad8" init={args.ad8} onChange={inv_table} value={args.ad8} />, consrate:<NumberInp prod="crad8" init={args.crad8} onChange={inv_table} value={args.crad8}/>,hs: shp({inv:args.ad8,consrate:args.crad8}),col4: 40,order: orderdate({hs: shp({inv:args.ad8,consrate:args.crad8}), mhs:5, lt:2}), col5: (args.ad8 - data(args).ad8.sum).toFixed(2)},
-        inv14:{col1: "2T PA", col2: data(args).ad9.sum.toFixed(2), col3: <NumberInp prod="ad9" init={args.ad9} onChange={inv_table} value={args.ad9} />, consrate:<NumberInp prod="crad9" init={args.crad9} onChange={inv_table} value={args.crad9}/>,hs: shp({inv:args.ad9,consrate:args.crad9}),col4: 40,order: orderdate({hs: shp({inv:args.ad9,consrate:args.crad9}), mhs:5, lt:2}), col5: (args.ad9 - data(args).ad9.sum).toFixed(2)},
-        inv15:{col1: "HYA", col2: data(args).ad10.sum.toFixed(2), col3: <NumberInp prod="ad10" init={args.ad10} onChange={inv_table} value={args.ad10} />, consrate:<NumberInp prod="crad10" init={args.crad10} onChange={inv_table} value={args.crad10}/>,hs: shp({inv:args.ad10,consrate:args.crad10}),col4: 40,order: orderdate({hs: shp({inv:args.ad10,consrate:args.crad10}), mhs:5, lt:2}),col5: (args.ad10 - data(args).ad10.sum).toFixed(2)},
-        inv16:{col1: "DYE", col2: data(args).ad11.sum.toFixed(2), col3: <NumberInp prod="ad11" init={args.ad11} onChange={inv_table} value={args.ad11} />, consrate:<NumberInp prod="crad11" init={args.crad11} onChange={inv_table} value={args.crad11}/>,hs: shp({inv:args.ad11,consrate:args.crad11}),col4: 40,order: orderdate({hs: shp({inv:args.ad11,consrate:args.crad11}), mhs:5, lt:2}),col5: (args.ad11 - data(args).ad11.sum).toFixed(2)},
-        inv17:{col1: "TURB", col2: data(args).ad12.sum.toFixed(2), col3: <NumberInp prod="ad12" init={args.ad12} onChange={inv_table} value={args.ad12} />, consrate:<NumberInp prod="crad12" init={args.crad12} onChange={inv_table} value={args.crad12}/>,hs: shp({inv:args.ad12,consrate:args.crad12}),col4: 40,order: orderdate({hs: shp({inv:args.ad12,consrate:args.crad12}), mhs:5, lt:2}),col5: (args.ad12 - data(args).ad12.sum).toFixed(2)}
+        inv6: {col1: "TBN+", col2: data(args).ad1.sum.toFixed(2), col3: <NumberInp prod="ad1" init={args.ad1} onChange={inv_table} value={args.ad1} />, consrate:<NumberInp prod="crad1" init={args.crad1} onChange={inv_table} value={args.crad1}/>, hs: shp({inv:args.ad1,consrate:args.crad1}),col4: 40,order: orderdate({hs: shp({inv:args.ad1,consrate:args.crad1}), mhs:60, lt:40}),col5: (args.ad1 - data(args).ad1.sum).toFixed(2)},
+        inv7: {col1: "PPD", col2: data(args).ad2.sum.toFixed(2), col3: <NumberInp prod="ad2" init={args.ad2} onChange={inv_table} value={args.ad2} />, consrate:<NumberInp prod="crad2" init={args.crad2} onChange={inv_table} value={args.crad2}/>, hs: shp({inv:args.ad2,consrate:args.crad2}),col4: 40,order: orderdate({hs: shp({inv:args.ad2,consrate:args.crad2}), mhs:60, lt:40}),col5: (args.ad2 - data(args).ad2.sum).toFixed(2)},
+        inv8: {col1: "CI-4", col2: data(args).ad3.sum.toFixed(2), col3: <NumberInp prod="ad3" init={args.ad3} onChange={inv_table} value={args.ad3} />, consrate:<NumberInp prod="crad3" init={args.crad3} onChange={inv_table} value={args.crad3}/>, hs: shp({inv:args.ad3,consrate:args.crad3}),col4: 40, order: orderdate({hs: shp({inv:args.ad3,consrate:args.crad3}), mhs:60, lt:40}),col5: (args.ad3 - data(args).ad3.sum).toFixed(2)},
+        inv9: {col1: "BS200", col2: data(args).ad4.sum.toFixed(2), col3: <NumberInp prod="ad4" init={args.ad4} onChange={inv_table} value={args.ad4} />, consrate:<NumberInp prod="crad4" init={args.crad4} onChange={inv_table} value={args.crad4}/>, hs: shp({inv:args.ad4,consrate:args.crad4}),col4: 40,order: orderdate({hs: shp({inv:args.ad4,consrate:args.crad4}), mhs:60, lt:40}),col5: (args.ad4 - data(args).ad4.sum).toFixed(2)},
+        inv10: {col1: "VII", col2: data(args).ad5.sum.toFixed(2), col3: <NumberInp prod="ad5" init={args.ad5} onChange={inv_table} value={args.ad5} />, consrate:<NumberInp prod="crad5" init={args.crad5} onChange={inv_table} value={args.crad5}/>, hs: shp({inv:args.ad5,consrate:args.crad5}),col4: 40,order: orderdate({hs: shp({inv:args.ad5,consrate:args.crad5}), mhs:60, lt:40}),col5: (args.ad5 - data(args).ad5.sum).toFixed(2)},
+        inv11: {col1: "MONO PA EO", col2: data(args).ad6.sum.toFixed(2), col3: <NumberInp prod="ad6" init={args.ad6} onChange={inv_table} value={args.ad6} />, consrate:<NumberInp prod="crad6" init={args.crad6} onChange={inv_table} value={args.crad6}/>, hs: shp({inv:args.ad6,consrate:args.crad6}),col4: 40,order: orderdate({hs: shp({inv:args.ad6,consrate:args.crad6}), mhs:60, lt:40}),col5: (args.ad6 - data(args).ad6.sum).toFixed(2)},
+        inv12: {col1: "4T PA PEO", col2: data(args).ad7.sum.toFixed(2), col3: <NumberInp prod="ad7" init={args.ad7} onChange={inv_table} value={args.ad7} />, consrate:<NumberInp prod="crad7" init={args.crad7} onChange={inv_table} value={args.crad7}/>, hs: shp({inv:args.ad7,consrate:args.crad7}),col4: 40,order: orderdate({hs: shp({inv:args.ad7,consrate:args.crad7}), mhs:60, lt:40}),col5: (args.ad7 - data(args).ad7.sum).toFixed(2)},
+        inv13:{col1: "ATF PA", col2: data(args).ad8.sum.toFixed(2), col3: <NumberInp prod="ad8" init={args.ad8} onChange={inv_table} value={args.ad8} />, consrate:<NumberInp prod="crad8" init={args.crad8} onChange={inv_table} value={args.crad8}/>, hs: shp({inv:args.ad8,consrate:args.crad8}),col4: 40,order: orderdate({hs: shp({inv:args.ad8,consrate:args.crad8}), mhs:60, lt:40}), col5: (args.ad8 - data(args).ad8.sum).toFixed(2)},
+        inv14:{col1: "2T PA", col2: data(args).ad9.sum.toFixed(2), col3: <NumberInp prod="ad9" init={args.ad9} onChange={inv_table} value={args.ad9} />, consrate:<NumberInp prod="crad9" init={args.crad9} onChange={inv_table} value={args.crad9}/>, hs: shp({inv:args.ad9,consrate:args.crad9}),col4: 40,order: orderdate({hs: shp({inv:args.ad9,consrate:args.crad9}), mhs:60, lt:40}), col5: (args.ad9 - data(args).ad9.sum).toFixed(2)},
+        inv15:{col1: "HYA", col2: data(args).ad10.sum.toFixed(2), col3: <NumberInp prod="ad10" init={args.ad10} onChange={inv_table} value={args.ad10} />, consrate:<NumberInp prod="crad10" init={args.crad10} onChange={inv_table} value={args.crad10}/>, hs: shp({inv:args.ad10,consrate:args.crad10}),col4: 40,order: orderdate({hs: shp({inv:args.ad10,consrate:args.crad10}), mhs:60, lt:40}),col5: (args.ad10 - data(args).ad10.sum).toFixed(2)},
+        inv16:{col1: "DYE", col2: data(args).ad11.sum.toFixed(2), col3: <NumberInp prod="ad11" init={args.ad11} onChange={inv_table} value={args.ad11} />, consrate:<NumberInp prod="crad11" init={args.crad11} onChange={inv_table} value={args.crad11}/>, hs: shp({inv:args.ad11,consrate:args.crad11}),col4: 40,order: orderdate({hs: shp({inv:args.ad11,consrate:args.crad11}), mhs:60, lt:40}),col5: (args.ad11 - data(args).ad11.sum).toFixed(2)},
+        inv17:{col1: "TURB", col2: data(args).ad12.sum.toFixed(2), col3: <NumberInp prod="ad12" init={args.ad12} onChange={inv_table} value={args.ad12} />, consrate:<NumberInp prod="crad12" init={args.crad12} onChange={inv_table} value={args.crad12}/>, hs: shp({inv:args.ad12,consrate:args.crad12}),col4: 40,order: orderdate({hs: shp({inv:args.ad12,consrate:args.crad12}), mhs:60, lt:40}),col5: (args.ad12 - data(args).ad12.sum).toFixed(2)}
     };
     ;
-    function handledate(e){
-        let inputdate = new Date(e.target.value);
-        let todaydate = initdate;
-        comparedates(inputdate, todaydate)
-    }
+
     function comparedates(dateone, datetwo){
         var start = String(dateone.getFullYear()) + String(dateone.getMonth()).padStart(2,'0') + String(dateone.getDate()).padStart(2,'0');
         var end = String(datetwo.getFullYear()) + String(datetwo.getMonth()).padStart(2,'0') + String(datetwo.getDate()).padStart(2,'0');
@@ -230,6 +221,9 @@ function Graph3(props){
             console.log("current")
             result = "current"
         }
+        else if((comparedates(dates.current, dates.start) === "equal") || (comparedates(dates.current, dates.end) === "equal")){
+            result = "current"
+        }
         else {
             console.log("not current")
             result = "notcurrent"
@@ -238,45 +232,31 @@ function Graph3(props){
     }
     const startdater = new Date(props.startdate.year,props.startdate.month, props.startdate.date);
     const enddater = new Date(props.enddate.year, props.enddate.month, props.enddate.date);
-    var display = {current: 
-        <Center>
-            <Flex width='90%'>
-                <Box>
-                    <TaBle title="Products" columns={prod_table_columns} data={prod_table_data} />
-                </Box>
-                <Spacer />
-                <Box  >
-                    <TaBle title="Inventory" columns={inv_table_columns} data={inv_table_data} />
-                </Box>
-            </Flex>
-        </Center>, 
-    notcurrent:
-        <Center>
-            <Box>
-                <TaBle title="Products" columns={prod_table_columns} data={prod_table_data} />
-            </Box>
-        </Center>}
+    var currentmonth = {current: "Current", notcurrent: "Not current"}
     return (
         <div>
-            {current({start: startdater, current:initdate, end:enddater})} {` `}
-            as of: {`${initdate.getDate()}/${String(initdate.getMonth() + 1).padStart(2, '0')}/${initdate.getFullYear()} `}
+            {currentmonth[current({start: startdater, current:initdate, end:enddater})]} {` `} Month
+            {/* as of: {`${initdate.getDate()}/${String(initdate.getMonth() + 1).padStart(2, '0')}/${initdate.getFullYear()} `} */}
             {/* Today's Date's month: {initdate.toLocaleDateString('en-US', { month: 'short' })}  */}
-            <Center>
-                <Box bg='white' padding={3} border={"1px"} borderRadius='15px' width='80%' height='500px' shadow={'lg'}>
+            <Center overflow={'auto'}>
+                <Box bg='white' padding={3} border={"1px"} borderRadius='15px' width='80%' height='500px' shadow={'lg'} overflow={'auto'}>
                         <AgChartsReact options={chartOptions}/>
                 </Box>
             </Center>
             {/* <Input onChange={handledate} type='date' width={160}/> */}
             {/* {display[current({start: startdater, current:initdate, end:enddater})]} */}
-            <Center>
-                <Flex width='90%'>
+            
+            <Center overflow={'auto'} border={"1px"} borderRadius='15px'>
+                <Flex width='90%' overflow={'auto'}>
+
                     <Box>
                         <TaBle title="Products" columns={prod_table_columns} data={prod_table_data} />
                     </Box>
-                    <Spacer />
+                    <Spacer width={10} />
                     <Box  >
                         <TaBle title="Inventory" columns={inv_table_columns} data={inv_table_data} />
                     </Box>
+
                 </Flex>
             </Center>
         </div>

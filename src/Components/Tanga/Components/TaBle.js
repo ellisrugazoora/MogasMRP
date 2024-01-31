@@ -9,7 +9,7 @@ function TaBle(props){
             {props.title}
             
             <TableContainer className="tablecont" border={"0.5px outset"} borderRadius={"10px"} shadow={'lg'}>
-                <Table variant='striped' colorScheme='twitter' size='sm' >
+                <Table variant='striped' colorScheme='twitter' size={'sm'}  width={100} >
                     <TableCaption>Imperial to metric conversion factors</TableCaption>
                     
                     <Thead>
@@ -22,7 +22,7 @@ function TaBle(props){
                     <Tbody>
                             {
                                 Object.entries(props.data).map((row, rownum) => {
-                                    return (<Tr>{Object.entries(row[1]).map((col, colnum) => {
+                                    return (<Tr height={10}>{Object.entries(row[1]).map((col, colnum) => {
                                         return (<Td width={100}>{col[1]}</Td>)
                                     })}</Tr>)
                                 })
