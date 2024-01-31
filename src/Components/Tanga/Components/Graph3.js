@@ -1,25 +1,22 @@
-
 import React, { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom/client';
 import { AgChartsReact } from 'ag-charts-react';
-import { Box, Center, HStack, Spacer, VStack, Wrap, Flex } from "@chakra-ui/layout";
-import DataObject from '../Data/DataObject';
+import { Box, Center, Spacer, Flex } from "@chakra-ui/layout";
 import DataFunction from '../Data/DataFunction';
-import testobj from '../Data/DataObject';
 import { Button } from '@chakra-ui/button';
-import { Table, TableCaption, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/table';
 import NumberInp from './NumberInp';
-import TestTab from './TaBle';
 import TaBle from './TaBle';
-import { NumberInput, NumberInputField } from '@chakra-ui/react';
+import { Input } from '@chakra-ui/react';
 
 
 function Graph3(props){
     
     var data = DataFunction;
-    const [args, SetArgs] = useState(
+    const [args, SetArgs] = useState(() =>
         {
-        bo1: 1500, bo2: 900, bo3:600, bo4: 200, bo5: 200, bo6: 200, ad1:200, ad2:200, ad3:200, ad4:200, ad5: 200, ad6: 200, ad7: 200, ad8: 200, ad9:200, ad10: 200, ad11: 200, ad12: 200, //Starting inventory is a prop
+        let id = props.title + "data";
+        let stored_data = localStorage.getItem(id);
+        return stored_data ?  JSON.parse(stored_data) : {
+        bo1: 520, bo2: 240, bo3:180, bo4: 130, bo5: 140, bo6: 110, ad1:100, ad2:130, ad3:120, ad4:115, ad5: 109, ad6: 108, ad7: 140, ad8: 120, ad9:140, ad10: 169, ad11: 130, ad12: 123, //Starting inventory is a prop
         formulas: {
             _2T: populateformula({bo1:0.9050, bo5:0.08, ad9:0.0150}),
             _4T: populateformula({bo1:0.877,bo3:0,ad2:0.002, ad5:0.063, ad7:0.0550}),
@@ -38,20 +35,22 @@ function Graph3(props){
             SentryHDSae40:populateformula({bo1:0.7830,bo3:0.1800,ad1:0.003,ad6:0.0340}),
             TurbofleetSae15W:populateformula({bo1:0.3810,bo2:0.42,ad2:0.002,ad3:0.1170,ad5:0.08})
         },
-        _2T:180, _4T:180,atfIII: 180,DuramaxHD:180, FrontiaX:180,Geo80W90:180,Geo85W140:180,Hydrax32:180,HydraxZ46:180,HydraxZ68:180,PowerTransSP150:180,PowerTransSP220:180,PowerTransSP320:180,Sb22D210:180,SentryHDSae40:180,TurbofleetSae15W:180
-        }
+        _2T:80, _4T:200,atfIII: 5,DuramaxHD:85, FrontiaX:10,Geo80W90:7,Geo85W140:28,Hydrax32:2,HydraxZ46:2,HydraxZ68:5,PowerTransSP150:1,PowerTransSP220:2,PowerTransSP320:2,Sb22D210:1,SentryHDSae40:25,TurbofleetSae15W:65,
+        crbo1: 7, crbo2: 5, crbo3:3, crbo4: 2, crbo5: 2, crbo6: 2, crad1:1, crad2:1, crad3:2, crad4:3, crad5: 4, crad6: 2, crad7: 4, crad8: 1, crad9:1, crad10: 1, crad11: 1, crad12: 1
+    }}
     );
-    
+    useEffect(() => {//this saves to storage everytime the dependence "args" changes
+        localStorage.setItem(props.title + "data", JSON.stringify(args));
+      },[args, props.title]);
+
     function populateformula(obj){
         let result = {bo1:0,bo2:0,bo3:0,bo4:0,bo5:0,bo6:0,bo7:0,ad1:0,ad2:0,ad3:0,ad4:0,ad5:0,ad6:0,ad7:0,ad8:0,ad9:0,ad10:0,ad11:0,ad12:0,ad13:0};
         for (const key in obj) {
             result[key] = obj[key];
-            // if (Object.hasOwnProperty(obj)) {
-            //     result[key] = obj[key];
-            // }
         }
         return result;
     }
+    
     var chartOptions = {
         // Data: Data to be displayed in the chart
     title: {
@@ -64,7 +63,6 @@ function Graph3(props){
         data(args).bo1, data(args).bo2, data(args).bo3, data(args).bo4,data(args).bo5, data(args).ad1,data(args).ad2,data(args).ad3, 
         data(args).ad4, data(args).ad5, data(args).ad6, data(args).ad7, data(args).ad8, data(args).ad9,
         data(args).ad10, data(args).ad11, data(args).ad12 //I should make this a fnx({args})
-        //DataFunction({args}).baseoil, 
     ],
         // Series: Defines which chart type and data to use
     series: [ //This is pertinent to a single column
@@ -77,9 +75,7 @@ function Graph3(props){
     function limiting_reagent(name){
         console.log("limitingreagent = f(spare_inventory, product, product_ratios)")
         console.log("red_indication: the inventory such that the entirety of its remainder can be used in the production of the product in question")
-        //let columns = ["baseoil1", "baseoil2", "baseoil3", "baseoil4", "baseoil5", "additive1", "additive2", "additive3", "additive4", "additive5", "additive6", "additive7", "additive8", "additive9", "additive10", "additive11", "additive12"]
         let columns = ["bo1", "bo2", "bo3", "bo4", "bo5", "ad1", "ad2", "ad3", "ad4", "ad5", "ad6", "ad7", "ad8", "ad9", "ad10", "ad11", "ad12"];
-
         //let prod = name;
         let prod = name;
         let result;
@@ -147,9 +143,23 @@ function Graph3(props){
         }
         return sum;
     }
-    function transit(number, id){
-        console.log(`The id: ${id}; The value: ${number}`);
+    
+    var orderdate = (obj) => {
+        let current = new Date()
+        let x = obj.mhs + obj.lt;
+        let y = obj.hs - x;
+        let newdate = new Date();
+        if(y > 0){
+            newdate.setDate(current.getDate() + y)
+        }           
+        return `${newdate.getDate()}/${String(newdate.getMonth() + 1).padStart(2,'0')}`;
     }
+
+    var shp = (obj)=>{
+        let result = (obj.inv / obj.consrate).toFixed(1);
+        return result;
+    }
+    var initdate = new Date();
     var prod_table_columns = ["Products", "Quantity", "Maximize"]
     var prod_table_data = {
         prod1: {col1: "2T", col2: <NumberInp value={args._2T} prod="_2T" onChange={tick} init={args._2T} />, col4: <Button id='max' name='_2T' onClick={tablebutton}>Set Max</Button>},
@@ -170,42 +180,103 @@ function Graph3(props){
         prod16: {col1: "Turbofleet Sae 15W", col2: <NumberInp value={args.TurbofleetSae15W} prod="TurbofleetSae15W" onChange={prodtable} init={args.TurbofleetSae15W} />, col4: <Button id='max' name='TurbofleetSae15W' onClick={tablebutton}>Set Max</Button>},
         total: {col1: "Total", col2: product_total(args), col3: <Button isDisabled>Empty</Button> }
     }
-    var inv_table_columns = ["Inventory", "Required", "In stock","Lead time (days)", "Next order qty"/*,  "Order date", "Order amount"*/];
+    var inv_table_columns = ["Inventory", "Required", "In stock", "Consumption rate","Stock holding period","Lead time (days)",  "Order date", "Deficit/excess"];
     var inv_table_data = {
-        inv1: {col1: "500SN/600N", col2: data(args).bo1.sum.toFixed(2), col3: <NumberInp prod="bo1" init={args.bo1} onChange={inv_table} value={args.bo1} />, col4: 60, col5: (args.bo1 - data(args).bo1.sum).toFixed(2)},
-        inv2: {col1: "150SN", col2: data(args).bo2.sum.toFixed(2), col3: <NumberInp prod="bo2" init={args.bo2} onChange={inv_table} value={args.bo2} />, col4: 60,col5: (args.bo2 - data(args).bo2.sum).toFixed(2)},
-        inv3: {col1: "BS150", col2: data(args).bo3.sum.toFixed(2), col3: <NumberInp prod="bo3" init={args.bo3} onChange={inv_table} value={args.bo3} />, col4: 60,col5: (args.bo3 - data(args).bo3.sum).toFixed(2)},
-        inv4: {col1: "SN80/SN100", col2: data(args).bo4.sum.toFixed(2), col3: <NumberInp prod="bo4" init={args.bo4} onChange={inv_table} value={args.bo4} />, col4: 60,col5: (args.bo4 - data(args).bo4.sum).toFixed(2)},
-        inv5: {col1: "DPK", col2: data(args).bo5.sum.toFixed(2), col3: <NumberInp prod="bo5" init={args.bo5} onChange={inv_table} value={args.bo5} />, col4: 60,col5: (args.bo5 - data(args).bo5.sum).toFixed(2)},
-        
-        inv6: {col1: "TBN+", col2: data(args).ad1.sum.toFixed(2), col3: <NumberInp prod="ad1" init={args.ad1} onChange={inv_table} value={args.ad1} />, col4: 40,col5: (args.ad1 - data(args).ad1.sum).toFixed(2)},
-        inv7: {col1: "PPD", col2: data(args).ad2.sum.toFixed(2), col3: <NumberInp prod="ad2" init={args.ad2} onChange={inv_table} value={args.ad2} />, col4: 40,col5: (args.ad2 - data(args).ad2.sum).toFixed(2)},
-        inv8: {col1: "CI-4", col2: data(args).ad3.sum.toFixed(2), col3: <NumberInp prod="ad3" init={args.ad3} onChange={inv_table} value={args.ad3} />, col4: 40, col5: (args.ad3 - data(args).ad3.sum).toFixed(2)},
-        inv9: {col1: "BS200", col2: data(args).ad4.sum.toFixed(2), col3: <NumberInp prod="ad4" init={args.ad4} onChange={inv_table} value={args.ad4} />, col4: 40,col5: (args.ad4 - data(args).ad4.sum).toFixed(2)},
-        inv10: {col1: "VII", col2: data(args).ad5.sum.toFixed(2), col3: <NumberInp prod="ad5" init={args.ad5} onChange={inv_table} value={args.ad5} />, col4: 40,col5: (args.ad5 - data(args).ad5.sum).toFixed(2)},
-        inv11: {col1: "MONO PA EO", col2: data(args).ad6.sum.toFixed(2), col3: <NumberInp prod="ad6" init={args.ad6} onChange={inv_table} value={args.ad6} />, col4: 40,col5: (args.ad6 - data(args).ad6.sum).toFixed(2)},
-        inv12: {col1: "4T PA PEO", col2: data(args).ad7.sum.toFixed(2), col3: <NumberInp prod="ad7" init={args.ad7} onChange={inv_table} value={args.ad7} />, col4: 40,col5: (args.ad7 - data(args).ad7.sum).toFixed(2)},
-        inv13:{col1: "ATF PA", col2: data(args).ad8.sum.toFixed(2), col3: <NumberInp prod="ad8" init={args.ad8} onChange={inv_table} value={args.ad8} />, col4: 40,col5: (args.ad8 - data(args).ad8.sum).toFixed(2)},
-        inv14:{col1: "2T PA", col2: data(args).ad9.sum.toFixed(2), col3: <NumberInp prod="ad9" init={args.ad9} onChange={inv_table} value={args.ad9} />, col4: 40,col5: (args.ad9 - data(args).ad9.sum).toFixed(2)},
-        inv15:{col1: "HYA", col2: data(args).ad10.sum.toFixed(2), col3: <NumberInp prod="ad10" init={args.ad10} onChange={inv_table} value={args.ad10} />, col4: 40,col5: (args.ad10 - data(args).ad10.sum).toFixed(2)},
-        inv16:{col1: "DYE", col2: data(args).ad11.sum.toFixed(2), col3: <NumberInp prod="ad11" init={args.ad11} onChange={inv_table} value={args.ad11} />, col4: 40,col5: (args.ad11 - data(args).ad11.sum).toFixed(2)},
-        inv17:{col1: "TURB", col2: data(args).ad12.sum.toFixed(2), col3: <NumberInp prod="ad12" init={args.ad12} onChange={inv_table} value={args.ad12} />, col4: 40,col5: (args.ad12 - data(args).ad12.sum).toFixed(2)}
-    };//MONO PA EO; 4T PA PEO; ATF PA; 2T PA; HYA; DYE; TURB; TM PA
+        inv1: {col1: "500SN/600N", col2: data(args).bo1.sum.toFixed(2), col3: <NumberInp prod="bo1" init={args.bo1} onChange={inv_table} value={args.bo1} />, consrate:<NumberInp prod="crbo1" init={5} onChange={inv_table} value={args.crbo1}/>, hs: shp({inv:args.bo1,consrate:args.crbo1}), col4: 60, order: orderdate({ mhs:5,hs: shp({inv:args.bo1,consrate:args.crbo1}), lt:2}), col5: (args.bo1 - data(args).bo1.sum).toFixed(2)},
+        inv2: {col1: "150SN", col2: data(args).bo2.sum.toFixed(2), col3: <NumberInp prod="bo2" init={args.bo2} onChange={inv_table} value={args.bo2} />, consrate:<NumberInp prod="crbo2" init={2} onChange={inv_table} value={args.crbo2}/>,hs: shp({inv:args.bo2,consrate:args.crbo2}),col4: 60,order: orderdate({hs: shp({inv:args.bo2,consrate:args.crbo2}), mhs:5, lt:2}),col5: (args.bo2 - data(args).bo2.sum).toFixed(2)},
+        inv3: {col1: "BS150", col2: data(args).bo3.sum.toFixed(2), col3: <NumberInp prod="bo3" init={args.bo3} onChange={inv_table} value={args.bo3} />, consrate:<NumberInp prod="crbo3" init={1} onChange={inv_table} value={args.crbo3}/>,hs: shp({inv:args.bo3,consrate:args.crbo3}),col4: 60,order: orderdate({hs: shp({inv:args.bo3,consrate:args.crbo3}), mhs:5, lt:2}),col5: (args.bo3 - data(args).bo3.sum).toFixed(2)},
+        inv4: {col1: "SN80/SN100", col2: data(args).bo4.sum.toFixed(2), col3: <NumberInp prod="bo4" init={args.bo4} onChange={inv_table} value={args.bo4} />, consrate:<NumberInp prod="crbo4" init={1} onChange={inv_table} value={args.crbo4}/>,hs: shp({inv:args.bo4,consrate:args.crbo4}),col4: 60,order: orderdate({hs: shp({inv:args.bo4,consrate:args.crbo4}), mhs:5, lt:2}),col5: (args.bo4 - data(args).bo4.sum).toFixed(2)},
+        inv5: {col1: "DPK", col2: data(args).bo5.sum.toFixed(2), col3: <NumberInp prod="bo5" init={args.bo5} onChange={inv_table} value={args.bo5} />, consrate:<NumberInp prod="crbo5" init={1} onChange={inv_table} value={args.crbo5}/>,hs: shp({inv:args.bo5,consrate:args.crbo5}),col4: 60,order: orderdate({hs: shp({inv:args.bo5,consrate:args.crbo5}), mhs:5, lt:2}),col5: (args.bo5 - data(args).bo5.sum).toFixed(2)},
+
+        inv6: {col1: "TBN+", col2: data(args).ad1.sum.toFixed(2), col3: <NumberInp prod="ad1" init={args.ad1} onChange={inv_table} value={args.ad1} />, consrate:<NumberInp prod="crad1" init={args.crad1} onChange={inv_table} value={args.crad1}/>,hs: shp({inv:args.ad1,consrate:args.crad1}),col4: 40,order: orderdate({hs: shp({inv:args.ad1,consrate:args.crad1}), mhs:5, lt:2}),col5: (args.ad1 - data(args).ad1.sum).toFixed(2)},
+        inv7: {col1: "PPD", col2: data(args).ad2.sum.toFixed(2), col3: <NumberInp prod="ad2" init={args.ad2} onChange={inv_table} value={args.ad2} />, consrate:<NumberInp prod="crad2" init={args.crad2} onChange={inv_table} value={args.crad2}/>,hs: shp({inv:args.ad2,consrate:args.crad2}),col4: 40,order: orderdate({hs: shp({inv:args.ad2,consrate:args.crad2}), mhs:5, lt:2}),col5: (args.ad2 - data(args).ad2.sum).toFixed(2)},
+        inv8: {col1: "CI-4", col2: data(args).ad3.sum.toFixed(2), col3: <NumberInp prod="ad3" init={args.ad3} onChange={inv_table} value={args.ad3} />, consrate:<NumberInp prod="crad3" init={args.crad3} onChange={inv_table} value={args.crad3}/>,hs: shp({inv:args.ad3,consrate:args.crad3}),col4: 40, order: orderdate({hs: shp({inv:args.ad3,consrate:args.crad3}), mhs:5, lt:2}),col5: (args.ad3 - data(args).ad3.sum).toFixed(2)},
+        inv9: {col1: "BS200", col2: data(args).ad4.sum.toFixed(2), col3: <NumberInp prod="ad4" init={args.ad4} onChange={inv_table} value={args.ad4} />, consrate:<NumberInp prod="crad4" init={args.crad4} onChange={inv_table} value={args.crad4}/>,hs: shp({inv:args.ad4,consrate:args.crad4}),col4: 40,order: orderdate({hs: shp({inv:args.ad4,consrate:args.crad4}), mhs:5, lt:2}),col5: (args.ad4 - data(args).ad4.sum).toFixed(2)},
+        inv10: {col1: "VII", col2: data(args).ad5.sum.toFixed(2), col3: <NumberInp prod="ad5" init={args.ad5} onChange={inv_table} value={args.ad5} />, consrate:<NumberInp prod="crad5" init={args.crad5} onChange={inv_table} value={args.crad5}/>,hs: shp({inv:args.ad5,consrate:args.crad5}),col4: 40,order: orderdate({hs: shp({inv:args.ad5,consrate:args.crad5}), mhs:5, lt:2}),col5: (args.ad5 - data(args).ad5.sum).toFixed(2)},
+        inv11: {col1: "MONO PA EO", col2: data(args).ad6.sum.toFixed(2), col3: <NumberInp prod="ad6" init={args.ad6} onChange={inv_table} value={args.ad6} />, consrate:<NumberInp prod="crad6" init={args.crad6} onChange={inv_table} value={args.crad6}/>,hs: shp({inv:args.ad6,consrate:args.crad6}),col4: 40,order: orderdate({hs: shp({inv:args.ad6,consrate:args.crad6}), mhs:5, lt:2}),col5: (args.ad6 - data(args).ad6.sum).toFixed(2)},
+        inv12: {col1: "4T PA PEO", col2: data(args).ad7.sum.toFixed(2), col3: <NumberInp prod="ad7" init={args.ad7} onChange={inv_table} value={args.ad7} />, consrate:<NumberInp prod="crad7" init={args.crad7} onChange={inv_table} value={args.crad7}/>,hs: shp({inv:args.ad7,consrate:args.crad7}),col4: 40,order: orderdate({hs: shp({inv:args.ad7,consrate:args.crad7}), mhs:5, lt:2}),col5: (args.ad7 - data(args).ad7.sum).toFixed(2)},
+        inv13:{col1: "ATF PA", col2: data(args).ad8.sum.toFixed(2), col3: <NumberInp prod="ad8" init={args.ad8} onChange={inv_table} value={args.ad8} />, consrate:<NumberInp prod="crad8" init={args.crad8} onChange={inv_table} value={args.crad8}/>,hs: shp({inv:args.ad8,consrate:args.crad8}),col4: 40,order: orderdate({hs: shp({inv:args.ad8,consrate:args.crad8}), mhs:5, lt:2}), col5: (args.ad8 - data(args).ad8.sum).toFixed(2)},
+        inv14:{col1: "2T PA", col2: data(args).ad9.sum.toFixed(2), col3: <NumberInp prod="ad9" init={args.ad9} onChange={inv_table} value={args.ad9} />, consrate:<NumberInp prod="crad9" init={args.crad9} onChange={inv_table} value={args.crad9}/>,hs: shp({inv:args.ad9,consrate:args.crad9}),col4: 40,order: orderdate({hs: shp({inv:args.ad9,consrate:args.crad9}), mhs:5, lt:2}), col5: (args.ad9 - data(args).ad9.sum).toFixed(2)},
+        inv15:{col1: "HYA", col2: data(args).ad10.sum.toFixed(2), col3: <NumberInp prod="ad10" init={args.ad10} onChange={inv_table} value={args.ad10} />, consrate:<NumberInp prod="crad10" init={args.crad10} onChange={inv_table} value={args.crad10}/>,hs: shp({inv:args.ad10,consrate:args.crad10}),col4: 40,order: orderdate({hs: shp({inv:args.ad10,consrate:args.crad10}), mhs:5, lt:2}),col5: (args.ad10 - data(args).ad10.sum).toFixed(2)},
+        inv16:{col1: "DYE", col2: data(args).ad11.sum.toFixed(2), col3: <NumberInp prod="ad11" init={args.ad11} onChange={inv_table} value={args.ad11} />, consrate:<NumberInp prod="crad11" init={args.crad11} onChange={inv_table} value={args.crad11}/>,hs: shp({inv:args.ad11,consrate:args.crad11}),col4: 40,order: orderdate({hs: shp({inv:args.ad11,consrate:args.crad11}), mhs:5, lt:2}),col5: (args.ad11 - data(args).ad11.sum).toFixed(2)},
+        inv17:{col1: "TURB", col2: data(args).ad12.sum.toFixed(2), col3: <NumberInp prod="ad12" init={args.ad12} onChange={inv_table} value={args.ad12} />, consrate:<NumberInp prod="crad12" init={args.crad12} onChange={inv_table} value={args.crad12}/>,hs: shp({inv:args.ad12,consrate:args.crad12}),col4: 40,order: orderdate({hs: shp({inv:args.ad12,consrate:args.crad12}), mhs:5, lt:2}),col5: (args.ad12 - data(args).ad12.sum).toFixed(2)}
+    };
+    ;
+    function handledate(e){
+        let inputdate = new Date(e.target.value);
+        let todaydate = initdate;
+        comparedates(inputdate, todaydate)
+    }
+    function comparedates(dateone, datetwo){
+        var start = String(dateone.getFullYear()) + String(dateone.getMonth()).padStart(2,'0') + String(dateone.getDate()).padStart(2,'0');
+        var end = String(datetwo.getFullYear()) + String(datetwo.getMonth()).padStart(2,'0') + String(datetwo.getDate()).padStart(2,'0');
+        let concatdiff = parseInt(start - end,10)
+        let result;
+        if(concatdiff < 0){
+            result = "earlier";
+        }
+        else if(concatdiff === 0){
+            result = "equal";
+        }
+        else {
+            result = "later";}
+        console.log(result);
+        return result;
+    }
+    
+    var current = (dates) => {
+        let result;
+        if((comparedates(dates.current, dates.start) === "later") && (comparedates(dates.current, dates.end) === "earlier")){
+            console.log("current")
+            result = "current"
+        }
+        else {
+            console.log("not current")
+            result = "notcurrent"
+        }
+        return result;
+    }
+    const startdater = new Date(props.startdate.year,props.startdate.month, props.startdate.date);
+    const enddater = new Date(props.enddate.year, props.enddate.month, props.enddate.date);
+    var display = {current: 
+        <Center>
+            <Flex width='90%'>
+                <Box>
+                    <TaBle title="Products" columns={prod_table_columns} data={prod_table_data} />
+                </Box>
+                <Spacer />
+                <Box  >
+                    <TaBle title="Inventory" columns={inv_table_columns} data={inv_table_data} />
+                </Box>
+            </Flex>
+        </Center>, 
+    notcurrent:
+        <Center>
+            <Box>
+                <TaBle title="Products" columns={prod_table_columns} data={prod_table_data} />
+            </Box>
+        </Center>}
     return (
         <div>
-            {/* <Button id='_2T' onClick={limiting_reagent}>Limiting reagent test</Button> */}
-            <br />
+            {current({start: startdater, current:initdate, end:enddater})} {` `}
+            as of: {`${initdate.getDate()}/${String(initdate.getMonth() + 1).padStart(2, '0')}/${initdate.getFullYear()} `}
+            {/* Today's Date's month: {initdate.toLocaleDateString('en-US', { month: 'short' })}  */}
             <Center>
                 <Box bg='white' padding={3} border={"1px"} borderRadius='15px' width='80%' height='500px' shadow={'lg'}>
                         <AgChartsReact options={chartOptions}/>
                 </Box>
             </Center>
-            
+            {/* <Input onChange={handledate} type='date' width={160}/> */}
+            {/* {display[current({start: startdater, current:initdate, end:enddater})]} */}
             <Center>
-                <Flex width='80%'>
-                    <TaBle title="Products" columns={prod_table_columns} data={prod_table_data} />
-                    <Spacer/>
-                    <TaBle title="Inventory" columns={inv_table_columns} data={inv_table_data} />
+                <Flex width='90%'>
+                    <Box>
+                        <TaBle title="Products" columns={prod_table_columns} data={prod_table_data} />
+                    </Box>
+                    <Spacer />
+                    <Box  >
+                        <TaBle title="Inventory" columns={inv_table_columns} data={inv_table_data} />
+                    </Box>
                 </Flex>
             </Center>
         </div>

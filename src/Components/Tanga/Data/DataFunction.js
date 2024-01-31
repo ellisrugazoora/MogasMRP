@@ -14,7 +14,7 @@ function DataFunction(mult){
             return result
         }
         else {
-            console.log(`Spare is negative: ${result}`)
+            console.log(`Spare is negative: ${result} for ${inv}`)
             return 0
         }
     }
