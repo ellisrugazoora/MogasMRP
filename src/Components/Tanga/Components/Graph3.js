@@ -36,7 +36,7 @@ function Graph3(props){
             TurbofleetSae15W:populateformula({bo1:0.3810,bo2:0.42,ad2:0.002,ad3:0.1170,ad5:0.08})
         },
         _2T:80, _4T:200,atfIII: 5,DuramaxHD:85, FrontiaX:10,Geo80W90:7,Geo85W140:28,Hydrax32:2,HydraxZ46:2,HydraxZ68:5,PowerTransSP150:1,PowerTransSP220:2,PowerTransSP320:2,Sb22D210:1,SentryHDSae40:25,TurbofleetSae15W:65,
-        crbo1: 7, crbo2: 5, crbo3:3, crbo4: 2, crbo5: 2, crbo6: 2, crad1:1, crad2:1, crad3:2, crad4:3, crad5: 4, crad6: 2, crad7: 4, crad8: 1, crad9:1, crad10: 1, crad11: 1, crad12: 1
+        crbo1: 14.3, crbo2: 1.4, crbo3:2.07, crbo4: 0.06, crbo5: 0.24, crbo6: 0.01, crad1:0.01, crad2:0.03, crad3:0.3, crad4:0.05, crad5: 0.71, crad6: 0.14, crad7: 0.44, crad8: 0.02, crad9:0.05, crad10: 0.003, crad11: 1, crad12: 1
     }}
     );
     useEffect(() => {//this saves to storage everytime the dependence "args" changes
