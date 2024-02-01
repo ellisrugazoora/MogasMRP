@@ -10,7 +10,7 @@ function TaBle(props){
             
             <TableContainer className="tablecont" border={"0.5px outset"} borderRadius={"10px"} shadow={'lg'}>
                 <Table variant='striped' colorScheme='twitter' size={'sm'}  width={100} >
-                    <TableCaption>Imperial to metric conversion factors</TableCaption>
+                    {/* <TableCaption>Imperial to metric conversion factors</TableCaption> */}
                     
                     <Thead>
                         <Tr>

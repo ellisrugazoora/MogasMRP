@@ -9,12 +9,12 @@ import { Input, NumberDecrementStepper, NumberIncrementStepper, NumberInput, Num
 
 
 function Graph3(props){
-    
+    var dataid = props.title + "stored_data";
     var data = DataFunction;
     const [args, SetArgs] = useState(() =>
         {
-        let id = props.title + "data";
-        let stored_data = localStorage.getItem(id);
+        //let id = props.title + "data";
+        let stored_data = localStorage.getItem(dataid);
         return stored_data ?  JSON.parse(stored_data) : {
         bo1: 520, bo2: 240, bo3:180, bo4: 130, bo5: 140, bo6: 110, ad1:100, ad2:130, ad3:120, ad4:115, ad5: 109, ad6: 108, ad7: 140, ad8: 120, ad9:140, ad10: 169, ad11: 130, ad12: 123, //Starting inventory is a prop
         formulas: {
@@ -40,7 +40,7 @@ function Graph3(props){
     }}
     );
     useEffect(() => {//this saves to storage everytime the dependence "args" changes
-        localStorage.setItem(props.title + "data", JSON.stringify(args));
+        localStorage.setItem(dataid, JSON.stringify(args));
       },[args, props.title]);
 
     function populateformula(obj){
@@ -100,9 +100,9 @@ function Graph3(props){
         return result
     }
     function prodtable(number,id){
-        //let new_val = parseInt(number, 10);
+        let new_val = parseInt(number, 10);
         //let new_val = parseFloat(number);
-        let new_val = number;
+        //let new_val = number;
         SetArgs((current) => {
             return {...current, [id]: new_val}
         });
@@ -175,7 +175,7 @@ function Graph3(props){
         prod16: {col1: "Turbofleet Sae 15W", col2: <NumberInp value={args.TurbofleetSae15W} prod="TurbofleetSae15W" onChange={prodtable} init={args.TurbofleetSae15W} />, col4: <Button size={buttonsize} id='max' name='TurbofleetSae15W' onClick={tablebutton}>Set Max</Button>},
         total: {col1: "Total", col2: product_total(args), col3: <Button size={'md'} isDisabled>Empty</Button> }
     }
-    var inv_table_columns = ["Inventory", "Required", "In stock (Tons)", "Avg. daily consumption rate (Tons)","Stock holding period","Lead time (days)", "Order date", "Deficit/excess"];
+    var inv_table_columns = ["Inventory", "Required", "In stock (Tons)", "Avg. daily consumption rate (Tons)","Stock holding period","Lead time (days)", "Next order date", "Deficit/excess"];
     var inv_table_data = {
         inv1: {col1: "500SN/600N", col2: data(args).bo1.sum.toFixed(2), col3: <NumberInp prod="bo1" init={args.bo1} onChange={inv_table} value={args.bo1} />, consrate:<NumberInp prod="crbo1" init={args.crbo1} onChange={inv_table} value={args.crbo1}/>, hs: shp({inv:args.bo1,consrate:args.crbo1}), col4: 60, order: orderdate({ hs: shp({inv:args.bo1,consrate:args.crbo1}),mhs:60, lt:60}), col5: (args.bo1 - data(args).bo1.sum).toFixed(2)},
         inv2: {col1: "150SN", col2: data(args).bo2.sum.toFixed(2), col3: <NumberInp prod="bo2" init={args.bo2} onChange={inv_table} value={args.bo2} />, consrate:<NumberInp prod="crbo2" init={args.crbo2} onChange={inv_table} value={args.crbo2}/>, hs: shp({inv:args.bo2,consrate:args.crbo2}),col4: 60,order: orderdate({hs: shp({inv:args.bo2,consrate:args.crbo2}), mhs:60, lt:60}),col5: (args.bo2 - data(args).bo2.sum).toFixed(2)},
